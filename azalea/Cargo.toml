@@ -55,7 +55,7 @@ rand = { workspace = true }
 default = ["log", "serde"]
 # enables bevy_log::LogPlugin by default
 log = ["azalea-client/log"]
-serde = ["dep:serde"]
+serde = ["dep:serde", "azalea-core/serde", "azalea-registry/serde"]
 
 [[bench]]
 name = "pathfinder"
