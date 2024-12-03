@@ -396,6 +396,13 @@ pub fn declare_state_packets(input: TokenStream) -> TokenStream {
                 })
             }
         }
+
+        impl crate::packets::Packet<#clientbound_state_name> for #clientbound_state_name {
+            /// No-op, exists so you can pass a packet enum when a Packet<> is expected.
+            fn into_variant(self) -> #clientbound_state_name {
+                self
+            }
+        }
     });
 
     contents.into()
