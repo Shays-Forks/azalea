@@ -45,11 +45,7 @@ async fn main() -> AppExit {
         .set_swarm_handler(swarm_handle);
 
     for username_or_email in &args.accounts {
-        let account = if username_or_email.contains('@') {
-            Account::microsoft(username_or_email).await.unwrap()
-        } else {
-            Account::offline(username_or_email)
-        };
+        let account = Account::microsoft(username_or_email).await.unwrap();
 
         builder = builder.add_account_with_state(account, State::new());
     }
