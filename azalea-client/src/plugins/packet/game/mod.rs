@@ -8,10 +8,10 @@ use azalea_core::{
     position::{ChunkPos, Vec3},
 };
 use azalea_entity::{
-    Dead, EntityBundle, EntityKind, LastSentPosition, LoadedBy, LocalEntity, LookDirection,
-    Physics, Position, RelativeEntityUpdate,
-    indexing::{EntityIdIndex, EntityUuidIndex},
-    metadata::{Health, apply_metadata},
+    indexing::{EntityIdIndex, EntityUuidIndex}, metadata::{apply_metadata, Health}, Dead, EntityBundle, EntityKind, LastSentPosition, LoadedBy,
+    LocalEntity, LookDirection, Physics,
+    Position,
+    RelativeEntityUpdate,
 };
 use azalea_protocol::packets::game::*;
 use azalea_world::{InstanceContainer, InstanceName, MinecraftEntityId, PartialInstance};
@@ -20,11 +20,9 @@ pub use events::*;
 use tracing::{debug, error, trace, warn};
 
 use crate::{
-    ClientInformation, PlayerInfo,
-    chat::{ChatPacket, ChatReceivedEvent},
-    chunks, declare_packet_handlers,
-    disconnect::DisconnectEvent,
-    inventory::{
+    chat::{ChatPacket, ChatReceivedEvent}, chunks,
+    declare_packet_handlers,
+    disconnect::DisconnectEvent, inventory::{
         ClientSideCloseContainerEvent, Inventory, MenuOpenedEvent, SetContainerContentEvent,
     },
     local_player::{
@@ -32,6 +30,8 @@ use crate::{
     },
     movement::{KnockbackEvent, KnockbackType},
     packet::as_system,
+    ClientInformation,
+    PlayerInfo,
 };
 
 pub fn process_packet_events(ecs: &mut World) {
@@ -1353,12 +1353,12 @@ impl GamePacketHandler<'_> {
     pub fn ping(&mut self, p: &ClientboundPing) {
         debug!("Got ping packet {p:?}");
 
-        as_system::<EventWriter<_>>(self.ecs, |mut events| {
-            events.send(SendPacketEvent::new(
-                self.player,
-                ServerboundPong { id: p.id },
-            ));
-        });
+        // as_system::<EventWriter<_>>(self.ecs, |mut events| {
+        //     events.send(SendPacketEvent::new(
+        //         self.player,
+        //         ServerboundPong { id: p.id },
+        //     ));
+        // });
     }
 
     pub fn place_ghost_recipe(&mut self, _p: &ClientboundPlaceGhostRecipe) {}
