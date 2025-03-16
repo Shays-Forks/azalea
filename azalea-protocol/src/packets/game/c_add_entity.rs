@@ -17,7 +17,7 @@ pub struct ClientboundAddEntity {
     pub y_rot: i8,
     pub y_head_rot: i8,
     #[var]
-    pub data: u32,
+    pub data: i32,
     pub velocity: PositionDelta8,
 }
 
