@@ -25,7 +25,7 @@ pub struct ClientboundAddEntity {
     /// See [the wiki](https://minecraft.wiki/w/Java_Edition_protocol/Object_data)
     /// for more information about this field.
     #[var]
-    pub data: u32,
+    pub data: i32,
     pub velocity: PositionDelta8,
 }
 
