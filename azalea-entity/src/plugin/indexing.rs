@@ -208,9 +208,10 @@ pub fn remove_despawned_entities_from_indexes(
                         instance.entities_by_chunk.remove(&chunk);
                     }
                 } else {
-                    warn!(
-                        "Tried to remove entity {entity:?} from chunk {chunk:?} but the entity was not there."
-                    );
+                    // warn!(
+                    //     "Tried to remove entity {entity:?} from chunk
+                    // {chunk:?} but the entity was not there."
+                    // );
                 }
             }
             _ => {
