@@ -3,20 +3,20 @@
 use std::io;
 
 use azalea_protocol::{
-    ServerAddress,
     connect::{Connection, ConnectionError, Proxy},
     packets::{
-        ClientIntention, PROTOCOL_VERSION,
         handshake::{
-            ClientboundHandshakePacket, ServerboundHandshakePacket,
-            s_intention::ServerboundIntention,
+            s_intention::ServerboundIntention, ClientboundHandshakePacket,
+            ServerboundHandshakePacket,
+        }, status::{
+            c_status_response::ClientboundStatusResponse, s_status_request::ServerboundStatusRequest,
+            ClientboundStatusPacket,
         },
-        status::{
-            ClientboundStatusPacket, c_status_response::ClientboundStatusResponse,
-            s_status_request::ServerboundStatusRequest,
-        },
+        ClientIntention,
+        PROTOCOL_VERSION,
     },
     resolver,
+    ServerAddress,
 };
 use thiserror::Error;
 
@@ -76,10 +76,10 @@ pub async fn ping_server_with_connection(
 ) -> Result<ClientboundStatusResponse, PingError> {
     // send the client intention packet and switch to the status state
     conn.write(ServerboundIntention {
-        protocol_version: PROTOCOL_VERSION,
-        hostname: address.host.clone(),
+        pver: PROTOCOL_VERSION,
+        host: address.host.clone(),
         port: address.port,
-        intention: ClientIntention::Status,
+        next: ClientIntention::Status,
     })
     .await?;
     let mut conn = conn.status();

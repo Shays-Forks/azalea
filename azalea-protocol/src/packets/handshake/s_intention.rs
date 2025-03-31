@@ -8,8 +8,8 @@ use crate::packets::ClientIntention;
 #[derive(Hash, Clone, Debug, AzBuf, ServerboundHandshakePacket)]
 pub struct ServerboundIntention {
     #[var]
-    pub protocol_version: i32,
-    pub hostname: String,
+    pub pver: i32,
+    pub host: String,
     pub port: u16,
-    pub intention: ClientIntention,
+    pub next: ClientIntention,
 }

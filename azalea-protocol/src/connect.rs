@@ -10,19 +10,19 @@ use azalea_auth::sessionserver::{ClientSessionServerError, ServerSessionServerEr
 use azalea_crypto::{Aes128CfbDec, Aes128CfbEnc};
 use thiserror::Error;
 use tokio::io::{AsyncWriteExt, BufStream};
-use tokio::net::TcpStream;
 use tokio::net::tcp::{OwnedReadHalf, OwnedWriteHalf, ReuniteError};
+use tokio::net::TcpStream;
 use tracing::{error, info};
 use uuid::Uuid;
 
-use crate::packets::ProtocolPacket;
 use crate::packets::config::{ClientboundConfigPacket, ServerboundConfigPacket};
 use crate::packets::game::{ClientboundGamePacket, ServerboundGamePacket};
 use crate::packets::handshake::{ClientboundHandshakePacket, ServerboundHandshakePacket};
 use crate::packets::login::c_hello::ClientboundHello;
 use crate::packets::login::{ClientboundLoginPacket, ServerboundLoginPacket};
 use crate::packets::status::{ClientboundStatusPacket, ServerboundStatusPacket};
-use crate::read::{ReadPacketError, deserialize_packet, read_raw_packet, try_read_raw_packet};
+use crate::packets::ProtocolPacket;
+use crate::read::{deserialize_packet, read_raw_packet, try_read_raw_packet, ReadPacketError};
 use crate::write::{serialize_packet, write_raw_packet};
 
 pub struct RawReadConnection {
@@ -78,10 +78,10 @@ pub struct WriteConnection<W: ProtocolPacket> {
 ///
 ///     // handshake
 ///     conn.write(ServerboundIntention {
-///         protocol_version: PROTOCOL_VERSION,
-///         hostname: resolved_address.ip().to_string(),
+///         pver: PROTOCOL_VERSION,
+///         host: resolved_address.ip().to_string(),
 ///         port: resolved_address.port(),
-///         intention: ClientIntention::Login,
+///         next: ClientIntention::Login,
 ///     }).await?;
 ///
 ///     let mut conn = conn.login();

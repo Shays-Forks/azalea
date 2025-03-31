@@ -6,17 +6,17 @@ use std::{error::Error, sync::LazyLock};
 use azalea_protocol::{
     connect::Connection,
     packets::{
-        ClientIntention, PROTOCOL_VERSION, VERSION_NAME,
         handshake::{
-            ClientboundHandshakePacket, ServerboundHandshakePacket,
-            s_intention::ServerboundIntention,
-        },
-        login::{ServerboundLoginPacket, s_hello::ServerboundHello},
-        status::{
-            ServerboundStatusPacket,
+            s_intention::ServerboundIntention, ClientboundHandshakePacket,
+            ServerboundHandshakePacket,
+        }, login::{s_hello::ServerboundHello, ServerboundLoginPacket}, status::{
             c_pong_response::ClientboundPongResponse,
             c_status_response::{ClientboundStatusResponse, Players, Version},
+            ServerboundStatusPacket,
         },
+        ClientIntention,
+        PROTOCOL_VERSION,
+        VERSION_NAME,
     },
     read::ReadPacketError,
 };
@@ -80,10 +80,10 @@ async fn handle_connection(stream: TcpStream) -> anyhow::Result<()> {
                 info!(
                     "New connection from {}, hostname {:?}:{}, version {}, {:?}",
                     ip.ip(),
-                    packet.hostname,
+                    packet.host,
                     packet.port,
-                    packet.protocol_version,
-                    packet.intention
+                    packet.pver,
+                    packet.next
                 );
                 packet
             }
@@ -95,7 +95,7 @@ async fn handle_connection(stream: TcpStream) -> anyhow::Result<()> {
         }
     };
 
-    match intent.intention {
+    match intent.next {
         // If the client is pinging the proxy,
         // reply with the information below.
         ClientIntention::Status => {

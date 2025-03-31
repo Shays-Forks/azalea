@@ -15,29 +15,29 @@ use azalea_core::{
     tick::GameTick,
 };
 use azalea_entity::{
-    EntityPlugin, EntityUpdateSet, EyeHeight, LocalEntity, Position,
-    indexing::{EntityIdIndex, EntityUuidIndex},
-    metadata::Health,
+    indexing::{EntityIdIndex, EntityUuidIndex}, metadata::Health, EntityPlugin, EntityUpdateSet, EyeHeight,
+    LocalEntity,
+    Position,
 };
 use azalea_physics::PhysicsPlugin;
 use azalea_protocol::{
-    ServerAddress,
     common::client_information::ClientInformation,
     connect::{Connection, ConnectionError, Proxy},
     packets::{
-        self, ClientIntention, ConnectionProtocol, PROTOCOL_VERSION, Packet,
-        config::{ClientboundConfigPacket, ServerboundConfigPacket},
-        game::ServerboundGamePacket,
-        handshake::{
-            ClientboundHandshakePacket, ServerboundHandshakePacket,
-            s_intention::ServerboundIntention,
+        self, config::{ClientboundConfigPacket, ServerboundConfigPacket}, game::ServerboundGamePacket, handshake::{
+            s_intention::ServerboundIntention, ClientboundHandshakePacket,
+            ServerboundHandshakePacket,
+        }, login::{
+            s_hello::ServerboundHello, s_key::ServerboundKey, s_login_acknowledged::ServerboundLoginAcknowledged,
+            ClientboundLoginPacket,
         },
-        login::{
-            ClientboundLoginPacket, s_hello::ServerboundHello, s_key::ServerboundKey,
-            s_login_acknowledged::ServerboundLoginAcknowledged,
-        },
+        ClientIntention,
+        ConnectionProtocol,
+        Packet,
+        PROTOCOL_VERSION,
     },
     resolver,
+    ServerAddress,
 };
 use azalea_world::{Instance, InstanceContainer, InstanceName, MinecraftEntityId, PartialInstance};
 use bevy_app::{App, Plugin, PluginGroup, PluginGroupBuilder, PluginsState, Update};
@@ -65,9 +65,7 @@ use tracing::{debug, error, info};
 use uuid::Uuid;
 
 use crate::{
-    Account, PlayerInfo,
-    attack::{self, AttackPlugin},
-    brand::BrandPlugin,
+    attack::{self, AttackPlugin}, brand::BrandPlugin,
     chat::ChatPlugin,
     chunks::{ChunkBatchInfo, ChunksPlugin},
     disconnect::{DisconnectEvent, DisconnectPlugin},
@@ -80,8 +78,8 @@ use crate::{
     mining::{self, MiningPlugin},
     movement::{LastSentLookDirection, MovementPlugin, PhysicsState},
     packet::{
-        PacketPlugin,
         login::{self, InLoginState, LoginSendPacketQueue},
+        PacketPlugin,
     },
     player::retroactively_add_game_profile_component,
     pong::PongPlugin,
@@ -89,6 +87,8 @@ use crate::{
     respawn::RespawnPlugin,
     task_pool::TaskPoolPlugin,
     tick_end::TickEndPlugin,
+    Account,
+    PlayerInfo,
 };
 
 /// `Client` has the things that a user interacting with the library will want.
@@ -381,10 +381,10 @@ impl Client {
     > {
         // handshake
         conn.write(ServerboundIntention {
-            protocol_version: PROTOCOL_VERSION,
-            hostname: address.host.clone(),
+            pver: PROTOCOL_VERSION,
+            host: address.host.clone(),
             port: address.port,
-            intention: ClientIntention::Login,
+            next: ClientIntention::Login,
         })
         .await?;
         let mut conn = conn.login();
