@@ -69,15 +69,7 @@ impl ChatPacket {
                 }
 
                 // it's a system message, so we'll have to match the content with regex
-
-                if let Some(m) =
-                    regex!("^<([a-zA-Z_0-9]{1,16})> (?:-> me)?(.+)$").captures(&message)
-                {
-                    return (Some(m[1].to_string()), m[2].to_string());
-                }
-                // 2b2t whispers
-                if let Some(m) = regex!("^([a-zA-Z_0-9]{1,16}) whispers: (.+)$").captures(&message)
-                {
+                if let Some(m) = regex!(r"^(?: ?[\(\[\{].+[\}\]\)] ?)?(\[me -> |<)?(?: ?[\(\[\{].+[\}\]\)] ?)?(\w{1,16})(?: ?[\(\[\{].+[\}\]\)] ?)? (whispers( to you)?: )?(.+)$").captures(&message) {
                     return (Some(m[1].to_string()), m[2].to_string());
                 }
 
@@ -142,8 +134,9 @@ impl ChatPacket {
                 if p.overlay {
                     return false;
                 }
-                if regex!("^(-> me|[a-zA-Z_0-9]{1,16} whispers: )").is_match(&message) {
-                    return true;
+
+                if let Some(m) = regex!(r"^(?: ?[\(\[\{].+[\}\]\)] ?)?(\[me -> |<)?(?: ?[\(\[\{].+[\}\]\)] ?)?(?:\w{1,16})(?: ?[\(\[\{].+[\}\]\)] ?)?(>|\])? (whispers( to you)?: )?").captures(&message) {
+                    return (m.get(1).is_some() && m.get(3).is_some()) || m.get(4).is_some();
                 }
 
                 false
