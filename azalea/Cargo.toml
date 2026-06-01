@@ -27,7 +27,7 @@ azalea-registry.workspace = true
 azalea-world.workspace = true
 bevy_app.workspace = true
 bevy_ecs.workspace = true
-bevy_tasks = { workspace = true, features = ["multi_threaded"] }
+bevy_tasks = { workspace = true }
 derive_more = { workspace = true, features = ["deref", "deref_mut"] }
 futures.workspace = true
 futures-lite.workspace = true
